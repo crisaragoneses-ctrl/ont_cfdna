@@ -1,0 +1,156 @@
+# CRIS CONFIG PRUEBA CFDNA
+# Reference files
+ref: "/storage/scratch01/users/tdidomenico/res/genomes/h_sapiens/gencode/v38/GRCh38.chronly.genome.fa.gz"
+ann: "/storage/scratch01/users/tdidomenico/res/genomes/h_sapiens/gencode/v38/gencode.v45.basic.annotation.gtf.gz"
+regions: "/storage/scratch01/groups/bu/myeloma_resistance/regulatory_annotations/out/candidates.bed"
+regulatory: "/storage/scratch01/groups/bu/myeloma_resistance/regulatory_annotations/out/promoters_ensembl.bed"
+encode_blacklist: "/storage/scratch01/users/tdidomenico/res/genomes/h_sapiens/gencode/v38/ENCFF356LFX_encode-blacklist-GRCh38.bed.gz"
+severus_vntrs: "/storage/scratch01/users/tdidomenico/res/genomes/h_sapiens/gencode/v38/human_GRCh38_no_alt_analysis_set.trf.bed"
+chrom_sizes: "/storage/scratch01/users/tdidomenico/res/genomes/h_sapiens/gencode/v38/GRCh38.chronly.genome.chrsizes"
+
+# Tool paths
+dorado_bin: "/storage/scratch01/groups/bu/ont_cfdna/cfdna_ont/res/dorado-1.4.0-linux-x64/bin/dorado"
+modkit_bin: "/storage/scratch01/groups/bu/ont_cfdna/cfdna_ont/res/modkit_v0.6.1_481e3c9/modkit"
+clair3_model: "storage/scratch01/groups/bu/ont_cfdna/cfdna_ont/res/clair3_r1041_e82_400bps_sup_v500"
+
+# Analysis parameters
+minq: 9
+regulatory_region_padding: 5000
+methylartist:
+  enabled: True
+  mods: ["m", "h"]
+smoothtools:
+    bin: 1000000
+    chunk: 500000
+    spike: 100
+    smooth: 3
+entropy:
+    num_positions: 4
+    thresholds:
+        homogeneous: 0.2
+        heterogeneous: 0.6
+
+# Samples hierarchical structure
+samples:
+  CNIO4:
+    20240926_1655_P2S-00806-A_PAW91195_5fc7f251:
+      pod5: "/storage/scratch01/groups/bu/ont_cfdna/"
+      colour: "#359B73"
+  JGS885:
+    20241001_1605_P2S-00806-A_PAW90485_6dc14a84:
+      pod5: "/storage/scratch01/groups/bu/ont_cfdna/"
+      colour: "#2271B2"
+
+# Resource specifications for different steps
+resources:
+  default:
+    partition: main
+    threads: 2
+    mem_mb: 8000
+    runtime: 30
+    slurm_extra: ""
+    params_extra: ""
+  basecall_dorado:
+    partition: gpu
+    threads: 24
+    mem_mb: 128000
+    runtime: 4320
+    #gpus: 1
+    #gpu_type: "A100"
+    params_model: "sup,5mCG_5hmCG"
+    params_extra: "--recursive"
+    gres: "gpu:A100:1"
+  summary_dorado:
+    runtime: 90
+  pycoqc:
+    mem_mb: 16000
+  minimap2:
+    threads: 16
+    mem_mb: 64000
+    runtime: 1440
+  primary:
+    threads: 16
+    mem_mb: 64000
+    runtime: 720
+  mosdepth:
+    runtime: 60
+    threads: 16
+  coverage:
+    runtime: 240
+    mem_mb: 64000
+  modkit_pileup:
+    runtime: 720
+    mem_mb: 64000
+    threads: 30
+  modkit_entropy:
+    runtime: 30
+    mem_mb: 16000
+    threads: 16
+  modkit_extract_calls:
+    runtime: 120
+    mem_mb: 24000
+    threads: 16
+  modkit_entropy_genome:
+    runtime: 120
+    mem_mb: 16000
+    threads: 16
+    modkit_tabix:
+    runtime: 240
+    mem_mb: 64000
+    threads: 1
+  modkit_dmr:
+    runtime: 720
+    mem_mb: 96000
+    threads: 26
+  sniffles:
+    runtime: 240
+    mem_mb: 64000
+    threads: 16
+  nanovar:
+    runtime: 240
+    mem_mb: 64000
+    threads: 16
+  methylartist:
+    runtime: 30
+    mem_mb: 64000
+  methylartist_wgmeth:
+    runtime: 720
+    mem_mb: 64000
+    threads: 24
+  deepvariant:
+    runtime: 1440
+    mem_mb: 128000
+    threads: 24
+  clair3:
+    runtime: 420
+    mem_mb: 64000
+    threads: 24
+  severus:
+    runtime: 300
+    mem_mb: 64000
+    threads: 52
+  bam_to_tabix:
+    runtime: 1440
+    mem_mb: 128000
+    threads: 4
+  clairs:
+    runtime: 420
+    mem_mb: 64000
+    threads: 24
+  qsfilter:
+    runtime: 120
+  smoothcov:
+    partition: short
+    threads: 8
+    mem_mb: 18000
+    runtime: 30
+  smoothmods:
+    partition: short
+    threads: 8
+    mem_mb: 18000
+    runtime: 30
+  binsnvs:
+    partition: short
+    threads: 8
+    mem_mb: 18000
+    runtime: 30
