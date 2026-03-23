@@ -63,7 +63,7 @@ resources:
   summary_dorado:
     runtime: 90
   pycoqc:
-    mem_mb: 16000
+    mem_mb: 64000
   minimap2:
     threads: 16
     mem_mb: 64000
