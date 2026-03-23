@@ -58,6 +58,8 @@ ctrl+a d
     ```
 
 4. Reference Genome and Gen annotations (tbh)
+5. Default run time
+6. Pyroqc mem_mb
 
 ### Dorado Basecall
  > change in resources: ``gres=get_resource("basecall_dorado", "gres"),`` 
@@ -66,5 +68,6 @@ ctrl+a d
 (no changes)
 
 ### PyroQC
-
+The monstuous amount of reads (derived from the short length of the reads) increases the size of the file. 
+so the config states 200GB of RAM needed and increasing the default run time to 60min.
 
