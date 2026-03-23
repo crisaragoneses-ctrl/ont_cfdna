@@ -62,5 +62,9 @@ ctrl+a d
 ### Dorado Basecall
  > change in resources: ``gres=get_resource("basecall_dorado", "gres"),`` 
 
- 
+### Summary Dorado 
+(no changes)
+
+### PyroQC
+
 
