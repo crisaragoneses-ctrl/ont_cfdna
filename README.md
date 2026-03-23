@@ -32,6 +32,7 @@ Based on: ``myeloma-epi-sv`` from Tomás Di Domenico and Francisco J. Villena
 ```sh
 screen –r ont
 ctrl+a [ #scrolling mode
+Esc #quit scrolling mode
 snakemake --use-conda -j unlimited --executor slurm --verbose -n #dry run
 ctrl+a d
 ```
