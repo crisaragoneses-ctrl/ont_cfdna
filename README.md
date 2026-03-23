@@ -32,6 +32,7 @@ Based on: ``myeloma-epi-sv`` from Tomás Di Domenico and Francisco J. Villena
 ```sh
 screen –r ont
 ctrl+a [ #scrolling mode
+Esc #quit scrolling mode
 snakemake --use-conda -j unlimited --executor slurm --verbose -n #dry run
 ctrl+a d
 ```
@@ -58,9 +59,19 @@ ctrl+a d
     ```
 
 4. Reference Genome and Gen annotations (tbh)
+5. Default run time
+6. Pyroqc mem_mb
 
-### Dorado Basecall
+### Rules 
+1. Dorado Basecall
  > change in resources: ``gres=get_resource("basecall_dorado", "gres"),`` 
 
- 
+2. Summary Dorado 
+(no changes)
 
+3. PyroQC
+The monstuous amount of reads (derived from the short length of the reads) increases the size of the file. 
+so the config states 200GB of RAM needed and increasing the default run time to 60min.
+
+### Troubleshooting
+1. Re-run needed. Try ```sh snakemake --touch file_relative_path``` in order to snakemake to believe the file is newer than the snakefile. 

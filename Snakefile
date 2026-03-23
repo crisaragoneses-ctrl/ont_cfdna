@@ -21,6 +21,7 @@ def input_main(wc):
         for sampleid in config["samples"][patient]:
             o.append(f"results/basecall_dorado/{patient}/{sampleid}.bam")
             o.append(f"results/summary_dorado/{patient}/{sampleid}.txt")
+            o.append(f"results/pycoqc/{patient}/{sampleid}.html")
     return o
 
 
@@ -73,4 +74,25 @@ rule summary_dorado:
     shell:
         """
         {params.bin} summary {input} >> {output} 2> {log}
+    """
+rule pycoqc:
+    input:
+        "results/summary_dorado/{patient}/{sampleid}.txt",
+    output:
+        "results/pycoqc/{patient}/{sampleid}.html",
+    log:
+        "logs/pycoqc/{patient}/{sampleid}.log",
+    benchmark:
+        "logs/pycoqc/{patient}/{sampleid}.bmk"
+    threads: get_resource("pycoqc", "threads")
+    conda:
+        "envs/pycoqc.yaml"
+    resources:
+        mem_mb=get_resource("pycoqc", "mem_mb"),
+        runtime=get_resource("pycoqc", "runtime"),
+        slurm_partition=get_resource("pycoqc", "partition"),
+        slurm_extra=get_resource("pycoqc", "slurm_extra"),
+    shell:
+        """
+       pycoQC -f {input} -o {output} > {log} 2>&1
     """

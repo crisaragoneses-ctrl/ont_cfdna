@@ -47,7 +47,7 @@ resources:
     partition: main
     threads: 2
     mem_mb: 8000
-    runtime: 30
+    runtime: 60
     slurm_extra: ""
     params_extra: ""
   basecall_dorado:
@@ -63,7 +63,7 @@ resources:
   summary_dorado:
     runtime: 90
   pycoqc:
-    mem_mb: 16000
+    mem_mb: 200000
   minimap2:
     threads: 16
     mem_mb: 64000
