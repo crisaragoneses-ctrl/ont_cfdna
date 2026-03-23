@@ -20,7 +20,7 @@ def input_main(wc):
     for patient in config["samples"]:
         for sampleid in config["samples"][patient]:
             o.append(f"results/basecall_dorado/{patient}/{sampleid}.bam")
-            #o.append(f"results/summary_dorado/{patient}/{sampleid}.txt")
+            o.append(f"results/summary_dorado/{patient}/{sampleid}.txt")
     return o
 
 
