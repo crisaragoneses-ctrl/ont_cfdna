@@ -61,13 +61,16 @@ ctrl+a d
 5. Default run time
 6. Pyroqc mem_mb
 
-### Dorado Basecall
+### Rules 
+1. Dorado Basecall
  > change in resources: ``gres=get_resource("basecall_dorado", "gres"),`` 
 
-### Summary Dorado 
+2. Summary Dorado 
 (no changes)
 
-### PyroQC
+3. PyroQC
 The monstuous amount of reads (derived from the short length of the reads) increases the size of the file. 
 so the config states 200GB of RAM needed and increasing the default run time to 60min.
 
+### Troubleshooting
+1. Re-run needed. Try ```sh snakemake --touch file_relative_path``` in order to snakemake to believe the file is newer than the snakefile. 
