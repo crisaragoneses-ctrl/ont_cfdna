@@ -63,15 +63,38 @@ ctrl+a d
 6. Pyroqc mem_mb
 
 ### Rules 
-1. Dorado Basecall
+1. Dorado Basecall.
  > change in resources: ``gres=get_resource("basecall_dorado", "gres"),`` 
 
-2. Summary Dorado 
+2. Summary Dorado.
 (no changes)
 
-3. PyroQC
+3. PyroQC.
 The monstuous amount of reads (derived from the short length of the reads) increases the size of the file. 
 so the config states 200GB of RAM needed and increasing the default run time to 60min.
 
+4. QSfilter
+It works. 
+> Inspecting data:
+>- using a previous enviroment intro-wgs with samtools, igv and more.
+>- see first lines 
+>- (a)  ```samtools view -h ``` 
+>- (b) ```head <file>```
+>- count reads
+>- (a)  ```samtools view -c ``` 
+>- (b) ```wc -l```
+
+5. Minimap2
+It works.
+> Inspecting data:
+>- using a previous enviroment intro-wgs with samtools, igv and more.
+>- see first lines ```samtools view -h ```
+>- size ```ls -lh ```
+>- IGV. connecting cluster to app. tbd. 
+
+6. Primary. 
+Comment other outputs to simulate tomas' approach in main.  
+
 ### Troubleshooting
 1. Re-run needed. Try ```sh snakemake --touch file_relative_path``` in order to snakemake to believe the file is newer than the snakefile. 
+2. Only consider the time stamp. ```snakemake --use-conda -j unlimited --executor slurm --verbose –n –rerun-triggers mtime```

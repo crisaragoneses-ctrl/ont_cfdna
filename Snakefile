@@ -19,11 +19,13 @@ def input_main(wc):
     o = []
     for patient in config["samples"]:
         for sampleid in config["samples"][patient]:
-            o.append(f"results/basecall_dorado/{patient}/{sampleid}.bam")
-            o.append(f"results/summary_dorado/{patient}/{sampleid}.txt")
+            # FILES COMMENTED TO AVOID THE RERUN AS IN TOMAS SNAKEFILE
+            # o.append(f"results/basecall_dorado/{patient}/{sampleid}.bam")
+            # o.append(f"results/summary_dorado/{patient}/{sampleid}.txt")
             o.append(f"results/pycoqc/{patient}/{sampleid}.html")
-            o.append(f"results/qsfilter/{patient}/{sampleid}.bam")
-            o.append(f"results/minimap2/{patient}/{sampleid}.bam")
+            # o.append(f"results/qsfilter/{patient}/{sampleid}.bam")
+            # o.append(f"results/minimap2/{patient}/{sampleid}.bam")
+            o.append(f"results/primary/{patient}/{sampleid}.bam") #changed to .bam
     return o
 
 
@@ -142,4 +144,27 @@ rule minimap2:
         """
         samtools fastq -T "*" {input.reads} 2>> {log} | minimap2 -a -x map-ont -y -t {threads} {input.ref} - 2>> {log} | samtools sort - -o {output} >> {log} 2>&1
         samtools index {output} >> {log} 2>&1
+    """
+
+rule primary:
+    input:
+        "results/minimap2/{patient}/{sampleid}.bam",
+    output:
+        bam="results/primary/{patient}/{sampleid}.bam",
+        bai="results/primary/{patient}/{sampleid}.bam.bai",
+    log:
+        "logs/primary/{patient}/{sampleid}.log",
+    benchmark:
+        "logs/primary/{patient}/{sampleid}.bmk"
+    threads: lambda wc: get_resource("primary", "threads")/2
+    resources:
+        mem_mb=get_resource("primary", "mem_mb"),
+        runtime=get_resource("primary", "runtime"),
+        slurm_partition=get_resource("primary", "partition"),
+    conda:
+        "envs/samtools.yaml"
+    shell:
+        """
+        samtools view -@ {threads} -F 2308 -b {input} | samtools sort -@ {threads} -o {output.bam} 2> {log}
+        samtools index {output.bam}
     """
