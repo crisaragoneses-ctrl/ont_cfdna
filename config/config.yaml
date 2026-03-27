@@ -1,6 +1,7 @@
 # CRIS CONFIG PRUEBA CFDNA
 # Reference files
-ref: "/storage/scratch01/users/tdidomenico/res/genomes/h_sapiens/gencode/v38/GRCh38.chronly.genome.fa.gz"
+ref: "/storage/scratch01/users/caragoneses/refgenome/GRCh38.chronly.genome.fa"
+#No se si me va a dar problemas que no sea .gz
 ann: "/storage/scratch01/users/tdidomenico/res/genomes/h_sapiens/gencode/v38/gencode.v45.basic.annotation.gtf.gz"
 regions: "/storage/scratch01/groups/bu/myeloma_resistance/regulatory_annotations/out/candidates.bed"
 regulatory: "/storage/scratch01/groups/bu/myeloma_resistance/regulatory_annotations/out/promoters_ensembl.bed"

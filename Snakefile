@@ -22,6 +22,8 @@ def input_main(wc):
             o.append(f"results/basecall_dorado/{patient}/{sampleid}.bam")
             o.append(f"results/summary_dorado/{patient}/{sampleid}.txt")
             o.append(f"results/pycoqc/{patient}/{sampleid}.html")
+            o.append(f"results/qsfilter/{patient}/{sampleid}.bam")
+            o.append(f"results/minimap2/{patient}/{sampleid}.bam")
     return o
 
 
@@ -95,4 +97,49 @@ rule pycoqc:
     shell:
         """
        pycoQC -f {input} -o {output} > {log} 2>&1
+    """    
+rule qsfilter:
+    input:
+        "results/basecall_dorado/{patient}/{sampleid}.bam",
+    output:
+        "results/qsfilter/{patient}/{sampleid}.bam",
+    log:
+        "logs/qsfilter/{patient}/{sampleid}.log",
+    benchmark:
+        "logs/qsfilter/{patient}/{sampleid}.bmk"
+    params:
+        minq=config["minq"]
+    threads: get_resource("qsfilter", "threads")
+    resources:
+        mem_mb=get_resource("qsfilter", "mem_mb"),
+        runtime=get_resource("qsfilter", "runtime"),
+        slurm_partition=get_resource("qsfilter", "partition"),
+    conda:
+        "envs/samtools.yaml"
+    shell:
+        """
+        samtools view -e '[qs]>={params.minq}' {input} > {output} 2> {log}
+    """
+
+rule minimap2:
+    input:
+        reads="results/qsfilter/{patient}/{sampleid}.bam",
+        ref=lambda wc: config["ref"],
+    output:
+        "results/minimap2/{patient}/{sampleid}.bam",
+    log:
+        "logs/minimap2/{patient}/{sampleid}.log",
+    benchmark:
+        "logs/minimap2/{patient}/{sampleid}.bmk"
+    threads: get_resource("minimap2", "threads")
+    resources:
+        mem_mb=get_resource("minimap2", "mem_mb"),
+        runtime=get_resource("minimap2", "runtime"),
+        slurm_partition=get_resource("minimap2", "partition"),
+    conda:
+        "envs/minimap2.yaml"
+    shell:
+        """
+        samtools fastq -T "*" {input.reads} 2>> {log} | minimap2 -a -x map-ont -y -t {threads} {input.ref} - 2>> {log} | samtools sort - -o {output} >> {log} 2>&1
+        samtools index {output} >> {log} 2>&1
     """
