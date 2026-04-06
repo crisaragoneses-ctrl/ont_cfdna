@@ -35,11 +35,11 @@ entropy:
 samples:
   CNIO4:
     20240926_1655_P2S-00806-A_PAW91195_5fc7f251:
-      pod5: "/storage/scratch01/groups/bu/ont_cfdna/"
+      pod5: "/storage/scratch01/groups/bu/ont_cfdna/CNIO4/"
       colour: "#359B73"
   JGS885:
     20241001_1605_P2S-00806-A_PAW90485_6dc14a84:
-      pod5: "/storage/scratch01/groups/bu/ont_cfdna/"
+      pod5: "/storage/scratch01/groups/bu/ont_cfdna/JGS885/"
       colour: "#2271B2"
 
 # Resource specifications for different steps

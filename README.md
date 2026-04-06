@@ -42,7 +42,7 @@ ctrl+a d
 
 ### Config Alterations
 
-1. Sample's source
+1. Sample's source (CAREFULL: with the complete path)
 2. Model's source
 3. Slurm extra
     * Changed from: 
@@ -97,6 +97,8 @@ Comment other outputs to simulate tomas' approach in main.
 
 7. Methylarist_scoredist
 Added in main + rule. Added function "get bams"
+
+8. Coverage. 
 
 ### Troubleshooting
 1. Re-run needed. Try ```sh snakemake --touch file_relative_path``` in order to snakemake to believe the file is newer than the snakefile. 
