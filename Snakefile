@@ -26,7 +26,9 @@ def input_main(wc):
             o.append(f"results/pycoqc/{patient}/{sampleid}.html")
             # o.append(f"results/qsfilter/{patient}/{sampleid}.bam")
             # o.append(f"results/minimap2/{patient}/{sampleid}.bam")
-            o.append(f"results/primary/{patient}/{sampleid}.bam") #changed to .bam
+            # o.append(f"results/primary/{patient}/{sampleid}.bam") #changed to .bam
+            o.append(f"results/primary/{patient}/{sampleid}.cov")
+            o.append(f"results/mosdepth/{patient}/{sampleid}.mosdepth.global.dist.txt")
     return o
 
 
@@ -196,3 +198,47 @@ rule methylartist_scoredist:
         """
         methylartist scoredist --ref {input.ref} --motif CG -b {params.bams} -o {output} -m m --svg &> {log}
     """
+rule coverage:
+    input:
+        "results/primary/{patient}/{sampleid}.bam",
+    output:
+        "results/primary/{patient}/{sampleid}.cov",
+    log:
+        "logs/coverage/{patient}/{sampleid}.log",
+    benchmark:
+        "logs/coverage/{patient}/{sampleid}.bmk"
+    resources:
+        mem_mb=get_resource("coverage", "mem_mb"),
+        runtime=get_resource("coverage", "runtime"),
+        slurm_partition=get_resource("coverage", "partition"),
+    conda:
+        "envs/samtools.yaml"
+    shell:
+        """
+        samtools coverage -A -o {output} {input} &> {log}
+    """
+
+rule mosdepth:
+    input:
+        bam="results/primary/{patient}/{sampleid}.bam",
+        bai="results/primary/{patient}/{sampleid}.bam.bai",
+    output:
+        "results/mosdepth/{patient}/{sampleid}.mosdepth.global.dist.txt",
+        "results/mosdepth/{patient}/{sampleid}.mosdepth.region.dist.txt",
+        "results/mosdepth/{patient}/{sampleid}.per-base.bed.gz",
+        "results/mosdepth/{patient}/{sampleid}.regions.bed.gz",
+        summary="results/mosdepth/{patient}/{sampleid}.mosdepth.summary.txt",
+    log:
+        "logs/mosdepth/{patient}/{sampleid}.log",
+    benchmark:
+        "logs/mosdepth/{patient}/{sampleid}.bmk"
+    threads: get_resource("mosdepth", "threads"),
+    resources:
+        mem_mb=get_resource("mosdepth", "mem_mb"),
+        runtime=get_resource("mosdepth", "runtime"),
+        slurm_partition=get_resource("mosdepth", "partition"),
+    params:
+        extra="--fast-mode",
+        by="1000",
+    wrapper:
+        "v5.2.1/bio/mosdepth"
