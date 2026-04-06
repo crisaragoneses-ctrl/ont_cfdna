@@ -18,6 +18,7 @@ with open(config["regions"]) as ifh:
 def input_main(wc):
     o = []
     for patient in config["samples"]:
+        o.append(f"results/methylartist_scoredist/{patient}.svg")
         for sampleid in config["samples"][patient]:
             # FILES COMMENTED TO AVOID THE RERUN AS IN TOMAS SNAKEFILE
             # o.append(f"results/basecall_dorado/{patient}/{sampleid}.bam")
@@ -167,4 +168,31 @@ rule primary:
         """
         samtools view -@ {threads} -F 2308 -b {input} | samtools sort -@ {threads} -o {output.bam} 2> {log}
         samtools index {output.bam}
+    """
+def get_bams(wc):
+        for sampleid in config["samples"][wc.patient]:
+            yield f"results/primary/{wc.patient}/{sampleid}.bam"
+
+rule methylartist_scoredist:
+    input:
+        bams=get_bams,
+        # ref="results/decompress_ref/ref.fa",
+        ref=lambda wc: config["ref"],
+    output:
+        "results/methylartist_scoredist/{patient}.svg",
+    log:
+        "logs/methylartist_scoredist/{patient}.log",
+    benchmark:
+        "logs/methylartist_scoredist/{patient}.bmk"
+    resources:
+        mem_mb=get_resource("methylartist_scoredist", "mem_mb"),
+        runtime=get_resource("methylartist_scoredist", "runtime"),
+        slurm_partition=get_resource("methylartist_scoredist", "partition"),
+    params:
+        bams=lambda wc: ",".join(get_bams(wc))
+    conda:
+        "envs/methylartist.yaml"
+    shell:
+        """
+        methylartist scoredist --ref {input.ref} --motif CG -b {params.bams} -o {output} -m m --svg &> {log}
     """

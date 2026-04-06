@@ -95,6 +95,9 @@ It works.
 6. Primary. 
 Comment other outputs to simulate tomas' approach in main.  
 
+7. Methylarist_scoredist
+Added in main + rule. Added function "get bams"
+
 ### Troubleshooting
 1. Re-run needed. Try ```sh snakemake --touch file_relative_path``` in order to snakemake to believe the file is newer than the snakefile. 
 2. Only consider the time stamp. ```snakemake --use-conda -j unlimited --executor slurm --verbose –n –rerun-triggers mtime```
